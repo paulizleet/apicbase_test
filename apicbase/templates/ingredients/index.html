@@ -1,0 +1,17 @@
+{% extends 'base/base.html'%}
+
+{% block content %}
+
+
+    {% if ingredient_list %}
+        <ul>
+        {% for ingredient in ingredient_list %}
+            <li><a href="{{ ingredient.id }}/">{{ ingredient.ingredient_name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No ingredients.</p>
+    {% endif %}
+
+
+{% endblock %}
