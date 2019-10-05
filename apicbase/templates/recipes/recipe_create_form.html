@@ -1,5 +1,14 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    {% comment %} <div id="ingredients-list">
+        <ul>
+        {% comment %} if ingredients then fill them out otherwise just put one empty ingredient box
+        <li>
+            
+        </li>
+        </ul>
+    </div> {% endcomment %}
+    {{form.ingredient_choice_field}}
     <input type="submit" value="Save">
 </form>

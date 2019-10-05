@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views import generic
 from django.urls import reverse
 
@@ -34,7 +34,7 @@ class RecipeCreate(generic.edit.CreateView):
         )
 
         new_recipe.save()
-        return redirect("recipes/")
+        return redirect("/")
         
 def edit(request, recipe_id):
     pass

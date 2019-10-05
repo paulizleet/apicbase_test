@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views import generic
 
 from .models import Ingredient, IngredientForm
@@ -40,6 +40,6 @@ class IngredientCreate(generic.edit.CreateView):
 
 
         new_ingredient.save()
-        return render(request, "templates/ingredients/index.html")
+        return redirect("/")
         
 #def add_recipe(request, )
