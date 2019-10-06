@@ -69,4 +69,6 @@ class RecipeUpdate(generic.edit.UpdateView):
 
     #     new_recipe.save()
     #     return redirect("/")
-        
+def direct_to_index(request):
+    print("gotcha")
+    return redirect("/recipe")

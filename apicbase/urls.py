@@ -7,7 +7,7 @@ from . import ingredient_views
 app_name = "apicbase"
 
 urlpatterns = [
-    path('', recipe_views.IndexView.as_view(), name='recipe-index'),
+    path('', recipe_views.direct_to_index, name='recipe-index'),
     path('recipe/', recipe_views.IndexView.as_view(), name='recipe-index'),
 
     path('recipe/<int:pk>/', recipe_views.DetailView.as_view(), name='recipe-detail'),
