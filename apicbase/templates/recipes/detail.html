@@ -4,7 +4,7 @@
 
 <h1>Name: {{recipe.recipe_name}}</h1>
 <p>Description: {{recipe.recipe_desc}}</p>
-<p>Cost: {{cost}}
+<p>Cost: {{cost}} </p>
     <table id="ingredients-list" border="1">
         <thead>
         <tr><th>Ingredient</th><th>Quantity</th><th>Cost</th></tr>
@@ -21,4 +21,5 @@
 {% endfor %}
 </table>
 
+<a href="update">Update</a>
 {% endblock %}
