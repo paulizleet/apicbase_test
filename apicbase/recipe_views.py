@@ -43,13 +43,29 @@ class RecipeCreate(generic.edit.CreateView):
     
     def post(self, request, *args, **kwargs):
         print(request)
+        print("muhfucken YEET")
         req_post = request.POST
         new_recipe = Recipe(
             recipe_name = req_post['recipe_name'],
             recipe_desc = req_post['recipe_desc']  
         )
-
         new_recipe.save()
+        # parse ingredients
+        for each in req_post["ingredients"].split(";"):
+
+            #  each looks something like "123,987"
+            #  split[0] is the ingredient id
+            #  split[1] is the quantity
+            
+
+            try:
+                splits = each.split(",")
+                new_recipe.add_ingredient(ing=splits[0], quantity=splits[1])
+            except IndexError:
+                #  since these strings will always end with a trailing ';', 
+                #  it will cause an exception when the final split piece is ''
+                #  we don't need the loop anymore so we jump out of it
+                break
         return redirect("/")
 
 class RecipeUpdate(generic.edit.UpdateView):
@@ -71,4 +87,5 @@ class RecipeUpdate(generic.edit.UpdateView):
     #     return redirect("/")
 def direct_to_index(request):
     print("gotcha")
+    print(request)
     return redirect("/recipe")

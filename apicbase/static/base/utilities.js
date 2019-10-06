@@ -3,16 +3,18 @@ $(document).ready(function(){
     var ingredientChooser = document.getElementById("id_ingredient");
 
     ingredientChooser.addEventListener("click", function( event ){
-        console.log(event);
-        console.log(event.originalTarget)
         // add a new line containing the choice and give an option for quantity
         var selection = event.originalTarget.firstChild
         if(selection.textContent.trim() == ""){ return }
-        console.log(selection)
+
+
+        //ensure this item hasn't already been added
+        if($(".ingredient-number").hasClass(event.originalTarget.value)){return}
+
         var newListEntry = "<tr class=\"ingredient-row\">"+
-                            "<td class=\"ingredient-number\" hidden>"+ event.originalTarget.value+"\"></td>"+
+                            "<td class=\"ingredient-number "+ event.originalTarget.value+"\" hidden>"+event.originalTarget.value+"</td>"+
                             "<td>"+ selection.textContent+"</td>"+
-                            "<td><span><input class=\".ingredient-quantity\"></input></span></td>"+
+                            "<td class=\"ingredient-quantity\"><input></input></td>"+
                             "<td><button type=\"button\" class=\"delbutton\" >❌</button></td></tr>"
                             
         console.log(newListEntry)
@@ -20,20 +22,55 @@ $(document).ready(function(){
     });
 
 
+
     //whichever delete button is clicked, delete that row
     $("#ingredients-list").on('click', ".delbutton", function(){
         this.closest("tr").remove();
-    })
+    });
 
-    $("#formsubmit").on("click"), function(event){
+    $(" form ").on("submit", function(event){
+        console.log(event)
         event.preventDefault();
         console.log("Submitted")
-        var chosenIngredients = {}
-        $("ingredients-list").find("tr").each(function(row){
-            var ingredientValue = row.find(".ingredient-number").textContent
-            var ingredientQuantity = row.find(".")
+        var chosenIngredients = ""
+
+        //Start by serializing everything normal in the form
+        var formSubmission = $( this ).serializeArray();
+
+        //Then manually serialize the ingredients table
+
+        //throw some validations in here for good measure
+        $(".ingredient-number").each(function(ele){
+            console.log(this.textContent)
+            var ingredientNumber = this.textContent
+        
+            //'this' is the current td w/ class .ingredient-number
+            //we want the input(child) of "this's" sibling belonging to class .ingredient-quantity
+            var ingredientQuantity =  $(this).siblings(".ingredient-quantity").children("input")[0].value
+
+
+            //parameter-ize ingredients list because $.param() is failing me
+            chosenIngredients += ingredientNumber+","+ingredientQuantity+";"
+            console.log([ingredientNumber, ingredientQuantity])
+            chosenIngredients[ingredientNumber] = ingredientQuantity
+        });
+
+
+
+        formSubmission[3] = {
+            name:"ingredients",
+            value: chosenIngredients
+        }
+        console.log(JSON.stringify(formSubmission))
+        //ajax time
+        $.ajax({
+            type: "POST",
+            url: "/recipe/add",
+            data: $.param(formSubmission),
+            success: function(){console.log("success!")},
+            fail: function(){console.log("Fail")}
         })
-    }
+    });
 })
 
 console.log("loaded");

@@ -89,8 +89,8 @@ class Recipe(models.Model):
 
 
     def add_ingredient(self, ing, quantity):
-        ingredient = Ingredient.objects.get(ingredient_name=ing["name"])
-        recing = RecipeIngredient(ingredient=ingredient, quantity=quantity).save()
+        ingredient = Ingredient.objects.get(id=ing)
+        recing = RecipeIngredient(ingredient=ingredient, quantity=quantity)
         self.ingredients.add(recing)
 
 class RecipeForm(ModelForm):

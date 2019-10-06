@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form method="post">
+<form id="recipe-form" method="post">
     {% csrf_token %}
     {{ form.as_p }}
    
