@@ -1,0 +1,3 @@
+apicbase/__pycache__/*
+.vscode/launch.json
+db.sqlite3

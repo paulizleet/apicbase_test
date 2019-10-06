@@ -1,1 +1,24 @@
-{{recipe}}
+{% extends 'base/base.html'%}
+
+{% block content %}
+
+<h1>Name: {{recipe.recipe_name}}</h1>
+<p>Description: {{recipe.recipe_desc}}</p>
+<p>Cost: {{cost}}
+    <table id="ingredients-list" border="1">
+        <thead>
+        <tr><th>Ingredient</th><th>Quantity</th><th>Cost</th></tr>
+        </thead>
+       
+{% for ingredient, cost in data.items  %}
+<tr>
+    <td> {{ingredient.ingredient.ingredient_name}}</td>
+
+    {% comment %} apparently you can call methods without parentheses {% endcomment %}
+    <td> {{ingredient.get_measure}} </td>
+    <td> €{{ ingredient.get_cost }} </td> 
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

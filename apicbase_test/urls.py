@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('apicbase/', include('apicbase.urls')),
+    path(r'', include('apicbase.urls')),
     #path('recipes/', include('apicbase.urls')),
     path('admin/', admin.site.urls)
 ]
