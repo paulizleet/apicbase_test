@@ -28,8 +28,8 @@ $(document).ready(function(){
         this.closest("tr").remove();
     });
 
+    
     $(" form ").on("submit", function(event){
-        console.log(event)
         event.preventDefault();
         console.log("Submitted")
         var chosenIngredients = ""
@@ -56,7 +56,7 @@ $(document).ready(function(){
         });
 
 
-
+        //replace the automatically filled "ingredients" key with our own
         formSubmission[3] = {
             name:"ingredients",
             value: chosenIngredients
