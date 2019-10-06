@@ -41,5 +41,17 @@ class IngredientCreate(generic.edit.CreateView):
 
         new_ingredient.save()
         return redirect("/")
+
+class IngredientUpdate(generic.edit.UpdateView):
+    print("a")
+    model = Ingredient
+    fields = ['ingredient_name', 'ingredient_desc', 'ingredient_cost', 'ingredient_unit_size', 'is_fluid']
+    template_name = "ingredients/ingredient_create_form.html"
+
+    def get(self, request):
+        return render(request, "ingredients/ingredient_create_form.html", {"form": IngredientForm()})
+
+
+
         
 #def add_recipe(request, )
