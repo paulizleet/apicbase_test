@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    var ingredientChooser = document.getElementById("id_ingredient_choice_field");
+    var ingredientChooser = document.getElementById("id_ingredient");
 
     ingredientChooser.addEventListener("click", function( event ){
         console.log(event);
