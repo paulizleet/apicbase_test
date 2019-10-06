@@ -1,14 +1,19 @@
+{% extends 'base/base.html'%}
+
+{% block content %}
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    {% comment %} <div id="ingredients-list">
-        <ul>
-        {% comment %} if ingredients then fill them out otherwise just put one empty ingredient box
-        <li>
-            
-        </li>
-        </ul>
-    </div> {% endcomment %}
-    {{form.ingredient_choice_field}}
-    <input type="submit" value="Save">
+   
+        <table id="ingredients-list" border="1">
+        <thead>
+        <tr><th>Ingredient</th><th>Quantity</th><th>Del.</th></tr>
+        </thead>
+
+        </table>
+    {% comment %} {{form.ingredient_choice_field}} {% endcomment %}
+    <input id="formsubmit" type="submit" value="Save">
 </form>
+
+{% endblock %}

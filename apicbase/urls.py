@@ -12,7 +12,7 @@ urlpatterns = [
 
     path('recipe/<int:pk>/', recipe_views.DetailView.as_view(), name='recipe-detail'),
     path('recipe/add', recipe_views.RecipeCreate.as_view(), name="new"),
-    path('recipe/update/<int:pk>', recipe_views.RecipeUpdate.as_view(), name="update"),
+    path('recipe/<int:pk>/update', recipe_views.RecipeUpdate.as_view(), name="update"),
 
     path('ingredient/', ingredient_views.IndexView.as_view(), name='ingredient-index'),
     path('ingredient/<int:pk>/', ingredient_views.DetailView.as_view(), name='ingredient-detail'),
