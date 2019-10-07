@@ -17,11 +17,11 @@ class DetailView(generic.DetailView):
 class IngredientCreate(generic.edit.CreateView):
     model = Ingredient
     fields = ['ingredient_name', 'ingredient_desc', 'ingredient_cost', 'ingredient_unit_size', 'is_fluid']
-    template_name = "ingredients/ingredient_create_form.html"
+    template_name = "ingredients/ingredient_create_page.html"
     
     def get(self, request):
         print("asdf")
-        return render(request, "ingredients/ingredient_create_form.html", {"form": IngredientForm()})
+        return render(request, "ingredients/ingredient_create_page.html", {"form": IngredientForm()})
     
     def post(self, request, *args, **kwargs):
         print(request)
@@ -47,6 +47,7 @@ class IngredientUpdate(generic.edit.UpdateView):
     model = Ingredient
     fields = ['ingredient_name', 'ingredient_desc', 'ingredient_cost', 'ingredient_unit_size', 'is_fluid']
     template_name = "ingredients/ingredient_create_form.html"
+    ingredient_pk_kwarg = "ingredient_pk"
 
     def get(self, request):
         return render(request, "ingredients/ingredient_create_form.html", {"form": IngredientForm()})
