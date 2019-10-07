@@ -16,6 +16,8 @@ urlpatterns = [
 
     path('ingredient/', ingredient_views.IndexView.as_view(), name='ingredient-index'),
     path('ingredient/<int:pk>/', ingredient_views.DetailView.as_view(), name='ingredient-detail'),
-    path('ingredient/add', ingredient_views.IngredientCreate.as_view(), name="new")
+    path('ingredient/add', ingredient_views.IngredientCreate.as_view(), name="new"),
+    path('ingredient/<int:pk>/update', ingredient_views.DetailView.as_view(), name='update'),
+
     
 ]
