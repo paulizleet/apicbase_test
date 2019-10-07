@@ -37,8 +37,9 @@ class RecipeIngredient(models.Model):
 
     #don't store cost in table because it's subject to change
     def get_cost(self):
-        #divide this all by 100 to convert from cents to euros
-        return ((self.quantity / self.ingredient.ingredient_unit_size) * self.ingredient.ingredient_cost)/100
+        # divide this all by 100 to convert from cents to euros
+        # truncate to 2 decimal places
+        return '%.2f'.zfill(1) % ((self.quantity / self.ingredient.ingredient_unit_size) * self.ingredient.ingredient_cost)/100
 
 
     def get_measure(self):
@@ -55,12 +56,12 @@ class RecipeIngredient(models.Model):
             if quantity < 100:
                 measure = "cL"
             else:
-                quantity /= 100
+                quantity = '%.1f'%(quantity / 100) #truncate to 1 decimal place
         else:
             measure = "g"
             if quantity >= 1000:
                 measure = "kg"
-                quantity /= 1000
+                quantity = '%.1f'%(quantity / 1000) #truncate to 1 decimal place
 
         return "%s %s" % (quantity, measure)
         
@@ -91,6 +92,20 @@ class Recipe(models.Model):
         #silliness to return two values at once, preventing 
         # an extra blank table row in the template
         return [data, total_cost]
+
+    def add_ingredients(self, ingredient_string):
+        for each in ingredient_string.split(";"):
+            #  each looks something like "123,987"
+            #  split[0] is the ingredient id
+            #  split[1] is the quantity
+            try:
+                splits = each.split(",")
+                self.add_ingredient(ing=splits[0], quantity=splits[1])
+            except IndexError:
+                #  since these strings will always end with a trailing ';', 
+                #  it will cause an exception when the final split piece is ''
+                #  we don't need the loop anymore so we jump out of it
+                break
 
 
     def add_ingredient(self, ing, quantity):
