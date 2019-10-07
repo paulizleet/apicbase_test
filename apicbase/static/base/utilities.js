@@ -65,7 +65,7 @@ $(document).ready(function(){
         //ajax time
         $.ajax({
             type: "POST",
-            url: "/recipe/add",
+            url: window.location.pathname,
             data: $.param(formSubmission),
             success: function(){console.log("success!")},
             fail: function(){console.log("Fail")}

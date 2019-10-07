@@ -20,9 +20,6 @@ class Ingredient(models.Model):
 class IngredientChoiceField(forms.Form):
     field1 = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
 
-    def __init__(self):
-        pass
-
 
 
 class IngredientForm(ModelForm):
@@ -46,7 +43,8 @@ class RecipeIngredient(models.Model):
         # Logic to return liters/grams for liquids/solids
         # and convert into higher denominations if need be
 
-        
+        # I assume that people arent using thousands 
+        # of kilograms of stuff in a single recipe
         measure = ""
         quantity = self.quantity
         if self.ingredient.is_fluid:
@@ -91,17 +89,18 @@ class Recipe(models.Model):
     def add_ingredient(self, ing, quantity):
         ingredient = Ingredient.objects.get(id=ing)
         recing = RecipeIngredient(ingredient=ingredient, quantity=quantity)
+        recing.save()
         self.ingredients.add(recing)
 
 class RecipeForm(ModelForm):
 
     
-    ingredient = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
+    ingredient_choices = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
 
+    # ingredient_choices = IngredientChoiceField()
     class Meta:
         model = Recipe
-        fields = ["recipe_name", "recipe_desc"]
-        #exclude = ['ingredients'] #don't use default behavior for ingredients field.  it's special
+        fields = ["recipe_name", "recipe_desc"] #don't use default behavior for ingredients field.  it's special
 
     #override
     def save(self):

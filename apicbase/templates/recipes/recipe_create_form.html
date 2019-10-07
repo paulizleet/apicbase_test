@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form id="recipe-form" method="post">
+<form id="recipe-form" method="update">
     {% csrf_token %}
     {{ form.as_p }}
    
@@ -10,7 +10,15 @@
         <thead>
         <tr><th>Ingredient</th><th>Quantity</th><th>Del.</th></tr>
         </thead>
-
+        {% if recipe.ingredients %}
+            {% for each in recipe.ingredients.all %}
+                <tr class="ingredient-row\">
+                <td class="ingredient-number {{each.ingredient.id}}" hidden></td>
+                <td>{{each.ingredient.ingredient_name}}</td>
+                <td class="ingredient-quantity"><input value="{{each.quantity}}"></input></td>
+                <td><button type="button" class="delbutton" >❌</button></td></tr>
+            {% endfor %}
+        {% endif %}
         </table>
     {% comment %} {{form.ingredient_choice_field}} {% endcomment %}
     <input id="formsubmit" type="submit" value="Save">

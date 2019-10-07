@@ -42,8 +42,6 @@ class RecipeCreate(generic.edit.CreateView):
         return render(request, "recipes/recipe_create_form.html", {"form": RecipeForm()})
     
     def post(self, request, *args, **kwargs):
-        print(request)
-        print("muhfucken YEET")
         req_post = request.POST
         new_recipe = Recipe(
             recipe_name = req_post['recipe_name'],
@@ -70,21 +68,28 @@ class RecipeCreate(generic.edit.CreateView):
 
 class RecipeUpdate(generic.edit.UpdateView):
     model = Recipe
-    
-    # def get(self, request):
-    #     print("asdf")
-    #     return render(request, "recipes/recipe_create_form.html", {"form": RecipeForm()})
-    
-    # def post(self, request, *args, **kwargs):
-    #     print(request)
-    #     req_post = request.POST
-    #     new_recipe = Recipe(
-    #         recipe_name = req_post['recipe_name'],
-    #         recipe_desc = req_post['recipe_desc']  
-    #     )
+    form_class = RecipeForm
+    template_name = "recipes/recipe_create_form.html"
 
-    #     new_recipe.save()
-    #     return redirect("/")
+    #going to jam the selector in via jquery
+
+    # def get(self, request, pk):
+    #     recipe = self.get_object()
+    #     recipe_ingredients = recipe.ingredients.all
+    #     form = self.get_form()
+
+    #     return render(request, self.template_name, {"form": self.form_class, "recipe": recipe, "recipe_ingredients": recipe_ingredients})
+    def form_invalid(self, form):
+        print("asdf")
+
+    def form_valid(self, form):
+        print("asdf")
+        return redirect("/recipe/%s" % self.kwargs["pk"])
+
+    def post(self, request, form):
+        print("asdf")
+    
+
 def direct_to_index(request):
     print("gotcha")
     print(request)

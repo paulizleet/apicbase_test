@@ -1,13 +1,14 @@
+{% extends 'base/base.html'%}
+
+
 {% comment %} 
     The ingredient creation form needs to be able to be served by itself
     (for adding recipes via the create_recipe page (eventually))
     this is a container template for ingredient/add
 {% endcomment %}
 
-{% extends 'base/base.html'%}
-
 {% block content %}
 
-{{ form.as_p }}
+{% include "./ingredient_create_form.html" %}
 
 {% endblock %}
