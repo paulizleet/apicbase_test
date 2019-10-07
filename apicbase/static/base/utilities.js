@@ -67,7 +67,12 @@ $(document).ready(function(){
             type: "POST",
             url: window.location.pathname,
             data: $.param(formSubmission),
-            success: function(){console.log("success!")},
+            success: function(data, status, xhr){
+
+                console.log("prodding")
+                $("html").empty();
+                $("html").append(data);
+            },
             fail: function(){console.log("Fail")}
         })
     });

@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import ModelForm, Textarea
 from django import forms
+from django.urls import reverse
 # Create your models here.
 
 class Ingredient(models.Model):
@@ -15,6 +16,8 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.ingredient_name
 
+    def get_absolute_url(self):
+        return reverse('apicbase:ingredient-detail', kwargs={"pk":self.id})
 
 
 class IngredientChoiceField(forms.Form):
@@ -68,6 +71,10 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.recipe_name
+
+    def get_absolute_url(self):
+        return reverse('apicbase:recipe-detail', kwargs={"pk":self.id})
+
 
     def assemble_for_display(self):
         #prepare a nice packet of relevant data for ez insertion into a template

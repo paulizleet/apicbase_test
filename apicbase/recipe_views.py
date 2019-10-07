@@ -47,6 +47,8 @@ class RecipeCreate(generic.edit.CreateView):
             recipe_name = req_post['recipe_name'],
             recipe_desc = req_post['recipe_desc']  
         )
+
+
         new_recipe.save()
         # parse ingredients
         for each in req_post["ingredients"].split(";"):
@@ -64,7 +66,8 @@ class RecipeCreate(generic.edit.CreateView):
                 #  it will cause an exception when the final split piece is ''
                 #  we don't need the loop anymore so we jump out of it
                 break
-        return redirect("/")
+
+        return redirect(new_recipe)
 
 class RecipeUpdate(generic.edit.UpdateView):
     model = Recipe

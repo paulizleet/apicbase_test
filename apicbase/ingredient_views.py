@@ -15,11 +15,16 @@ class DetailView(generic.DetailView):
     model = Ingredient
     template_name = "ingredients/detail.html"
 
+    # def get_absolute_url(self):
+    #     ret
+
+
 class IngredientCreate(generic.edit.CreateView):
     model = Ingredient
     fields = ['ingredient_name', 'ingredient_desc', 'ingredient_cost', 'ingredient_unit_size', 'is_fluid']
     template_name = "ingredients/ingredient_create_page.html"
     
+
     def get(self, request):
         print("asdf")
         return render(request, "ingredients/ingredient_create_page.html", {"form": IngredientForm()})
@@ -29,8 +34,7 @@ class IngredientCreate(generic.edit.CreateView):
         # or redirect to the update page and display errors
         return HttpResponse("<html><body>nope</body></html>")
 
-    def get_absolute_url(self):
-        return "/ingredients/%i" % self.id
+
     
     # def post(self, request, *args, **kwargs):
     #     print(request)
