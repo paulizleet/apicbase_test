@@ -2,18 +2,23 @@ $(document).ready(function(){
 
     var ingredientChooser = document.getElementById("id_ingredient_choices");
 
-    ingredientChooser.addEventListener("click", function( event ){
+    $(" option ").on("click", function( event ){
         // add a new line containing the choice and give an option for quantity
-        var selection = event.originalTarget.firstChild
-        if(selection.textContent.trim() == ""){ return }
+        console.log(event)
+        var selection = event.target.value
+        var selectionText = event.target.textContent
+        console.log(event)
+
+
+        if(selectionText.trim() == ""){ return }
 
 
         //ensure this item hasn't already been added
-        if($(".ingredient-number").hasClass(event.originalTarget.value)){return}
+        if($(".ingredient-number").hasClass(selection)){return}
 
         var newListEntry = "<tr class=\"ingredient-row\">"+
-                            "<td class=\"ingredient-number "+ event.originalTarget.value+"\" hidden>"+event.originalTarget.value+"</td>"+
-                            "<td>"+ selection.textContent+"</td>"+
+                            "<td class=\"ingredient-number "+ selection+"\" hidden>"+selection+"</td>"+
+                            "<td>"+ selectionText+"</td>"+
                             "<td class=\"ingredient-quantity\"><input></input></td>"+
                             "<td><button type=\"button\" class=\"delbutton\" >❌</button></td></tr>"
                             
