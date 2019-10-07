@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    var ingredientChooser = document.getElementById("id_ingredient");
+    var ingredientChooser = document.getElementById("id_ingredient_choices");
 
     ingredientChooser.addEventListener("click", function( event ){
         // add a new line containing the choice and give an option for quantity
