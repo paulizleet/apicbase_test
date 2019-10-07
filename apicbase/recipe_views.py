@@ -16,7 +16,7 @@ class IndexView(generic.ListView):
     template_name = 'recipes/index.html'
 
     def get_queryset(self):
-        return Recipe.objects.all()[:20]
+        return Recipe.objects.all()#[:20]
         
 
 class DetailView(generic.DetailView):
@@ -89,7 +89,7 @@ class RecipeUpdate(generic.edit.UpdateView):
         print("asdf")
         return redirect("/recipe/%s" % self.kwargs["pk"])
 
-    def post(self, request, form):
+    def post(self, request, pk, form):
         print("asdf")
     
 
