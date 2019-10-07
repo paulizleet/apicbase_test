@@ -43,16 +43,14 @@ class IngredientCreate(generic.edit.CreateView):
         return redirect("/")
 
 class IngredientUpdate(generic.edit.UpdateView):
-    print("a")
+
     model = Ingredient
+
     fields = ['ingredient_name', 'ingredient_desc', 'ingredient_cost', 'ingredient_unit_size', 'is_fluid']
     template_name = "ingredients/ingredient_create_form.html"
-    ingredient_pk_kwarg = "ingredient_pk"
 
-    def get(self, request):
-        return render(request, "ingredients/ingredient_create_form.html", {"form": IngredientForm()})
-
-
-
+    def form_valid(self, form):
+        form.save()
+        return redirect("/ingredient/%s" % self.kwargs["pk"])
         
 #def add_recipe(request, )
