@@ -13,7 +13,7 @@
         {% if recipe.ingredients %}
             {% for each in recipe.ingredients.all %}
                 <tr class="ingredient-row\">
-                <td class="ingredient-number {{each.ingredient.id}}" hidden></td>
+                <td class="ingredient-number {{each.ingredient.id}}" hidden>{{each.ingredient.id}}</td>
                 <td>{{each.ingredient.ingredient_name}}</td>
                 <td class="ingredient-quantity"><input value="{{each.quantity}}"></input></td>
                 <td><button type="button" class="delbutton" >❌</button></td></tr>
