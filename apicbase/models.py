@@ -39,7 +39,7 @@ class RecipeIngredient(models.Model):
     def get_cost(self):
         # divide this all by 100 to convert from cents to euros
         # truncate to 2 decimal places
-        return '%.2f'.zfill(1) % ((self.quantity / self.ingredient.ingredient_unit_size) * self.ingredient.ingredient_cost)/100
+        return round(((self.quantity / self.ingredient.ingredient_unit_size) * self.ingredient.ingredient_cost)/100, 2)
 
 
     def get_measure(self):
@@ -56,12 +56,12 @@ class RecipeIngredient(models.Model):
             if quantity < 100:
                 measure = "cL"
             else:
-                quantity = '%.1f'%(quantity / 100) #truncate to 1 decimal place
+                quantity = round((quantity / 100), 1) #truncate to 1 decimal place
         else:
             measure = "g"
             if quantity >= 1000:
                 measure = "kg"
-                quantity = '%.1f'%(quantity / 1000) #truncate to 1 decimal place
+                quantity = round((quantity / 1000), 1) #truncate to 1 decimal place
 
         return "%s %s" % (quantity, measure)
         
@@ -85,7 +85,7 @@ class Recipe(models.Model):
         total_cost = 0
         for rec_ingredient in self.ingredients.all():
             ing_cost = rec_ingredient.get_cost()
-            data[rec_ingredient]=ing_cost
+            data[rec_ingredient]='%.2f'.zfill(1) % (ing_cost)
             total_cost += ing_cost
 
 

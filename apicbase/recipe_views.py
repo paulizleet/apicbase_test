@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.views import generic
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
 from .models import Recipe, RecipeForm
 
@@ -12,29 +13,26 @@ from .models import Recipe, RecipeForm
 # felt like having a bunch of methods named recipe_index, recipe_get_create, recipe_post_create etc
 # was cumbersome.  generic views have methods to override (or not) to get the functionality I desire
 
-class IndexView(generic.ListView):
+class RecipeIndex(ListView):
     template_name = 'recipes/index.html'
-
+    paginate_by = 20
     def get_queryset(self):
         return Recipe.objects.all()#[:20]
         
 
-class DetailView(generic.DetailView):
+class RecipeDetail(DetailView):
     
     model = Recipe
     template_name = "recipes/detail.html"
 
     def get(self, request, pk):
-        
         recipe = Recipe.objects.get(id=pk)
         display_data = recipe.assemble_for_display()
-
-        return render(request, "recipes/detail.html", {'recipe': recipe, 'data': display_data[0], 'cost': display_data[1]})
-        #somewhere areound here is where you pull data together to pass into the templates
+        return render(request, self.template_name, {'recipe': recipe, 'data': display_data[0], 'cost': display_data[1]})
 
 
 
-class RecipeCreate(generic.edit.CreateView):
+class RecipeCreate(CreateView):
     model = Recipe
     
     def get(self, request):
@@ -47,51 +45,43 @@ class RecipeCreate(generic.edit.CreateView):
             recipe_name = req_post['recipe_name'],
             recipe_desc = req_post['recipe_desc']  
         )
-
-
         new_recipe.save()
+
         # parse ingredients
-        for each in req_post["ingredients"].split(";"):
-
-            #  each looks something like "123,987"
-            #  split[0] is the ingredient id
-            #  split[1] is the quantity
-            
-
-            try:
-                splits = each.split(",")
-                new_recipe.add_ingredient(ing=splits[0], quantity=splits[1])
-            except IndexError:
-                #  since these strings will always end with a trailing ';', 
-                #  it will cause an exception when the final split piece is ''
-                #  we don't need the loop anymore so we jump out of it
-                break
-
+        new_recipe.add_ingredients(req_post["ingredients"])
+  
         return redirect(new_recipe)
 
-class RecipeUpdate(generic.edit.UpdateView):
+class RecipeUpdate(UpdateView):
     model = Recipe
     form_class = RecipeForm
     template_name = "recipes/recipe_create_form.html"
-
-    #going to jam the selector in via jquery
-
-    # def get(self, request, pk):
-    #     recipe = self.get_object()
-    #     recipe_ingredients = recipe.ingredients.all
-    #     form = self.get_form()
-
-    #     return render(request, self.template_name, {"form": self.form_class, "recipe": recipe, "recipe_ingredients": recipe_ingredients})
-    def form_invalid(self, form):
-        print("asdf")
 
     def form_valid(self, form):
         print("asdf")
         return redirect("/recipe/%s" % self.kwargs["pk"])
 
-    def post(self, request, pk, form):
+    def post(self, request, *args, **kwargs):
+        # This is jank but I don't know what questions to ask to do it the right way
         print("asdf")
+        recipe = Recipe.objects.get(id=kwargs["pk"])
+
+        for each in recipe.ingredients.all():
+            each.delete()
+        ingredient_string = request.POST["ingredients"]
+        recipe.add_ingredients(ingredient_string)
+
+        return redirect(recipe)
+
+class RecipeSearch(ListView):
+    model = Recipe
+
+    # Change this later!
+    tamplate_name = "recipe/index.html" #can use index here because its just a list :)
     
+    def get(self, request):
+        for each in search_criteria.split(" "):
+            results = Recipe.objects.filter(recipe_name__contains=each)
 
 def direct_to_index(request):
     print("gotcha")
