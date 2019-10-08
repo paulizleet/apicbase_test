@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Name: {{recipe.recipe_name}}</h1>
+<h1>Recipe: {{recipe.recipe_name}}</h1>
 <p>Description: {{recipe.recipe_desc}}</p>
 <p>Cost: {{cost}} </p>
     <table id="ingredients-list" border="1">
@@ -12,7 +12,7 @@
        
 {% for ingredient, cost in data.items  %}
 <tr>
-    <td> {{ingredient.ingredient.ingredient_name}}</td>
+    <td> <a href='{% url 'apicbase:ingredient-detail' ingredient.ingredient.id %}' >{{ingredient.ingredient.ingredient_name}}</td>
 
     {% comment %} apparently you can call methods without parentheses {% endcomment %}
     <td> {{ingredient.get_measure}} </td>
@@ -21,5 +21,5 @@
 {% endfor %}
 </table>
 
-<a href="update">Update</a>
+<a href="{% url 'apicbase:recipe-update' recipe.id%}">Update</a>
 {% endblock %}

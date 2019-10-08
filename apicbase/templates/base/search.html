@@ -1,0 +1,36 @@
+{% extends 'base/base.html'%}
+
+{% block content %}
+
+<div class="recipe-results">
+    {% if recipe_results %}
+        <h2> Matching recipes</h2>
+        <ul>
+        {% for recipe in recipe_results %}
+            <li><a href="{% url 'apicbase:recipe-detail' recipe.id%}/">{{ recipe.recipe_name }}</a> - {{recipe.recipe_desc}}</li>
+        {% comment %} <li>
+            {% url 'apicbase:recipe-detail' recipe.id%}
+        </li> {% endcomment %}
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No matching recipes.</p>
+    {% endif %}
+</div>
+
+<div class="ingredient-results">
+    {% if ingredient_results %}
+        <h2> Matching Ingredients</h2>
+        <ul>
+        {% for ingredient in ingredient_results %}
+            <li><a href="{% url 'apicbase:ingredient-detail' ingredient.id%}/">{{ ingredient.ingredient_name }}</a> - {{ingredient.ingredient_desc}}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No matching ingredients.</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
