@@ -2,6 +2,7 @@ from django.db import models
 from django.forms import ModelForm, Textarea
 from django import forms
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 class Ingredient(models.Model):
@@ -22,8 +23,6 @@ class Ingredient(models.Model):
 
 class IngredientChoiceField(forms.Form):
     field1 = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
-
-
 
 class IngredientForm(ModelForm):
     class Meta:
@@ -64,17 +63,18 @@ class RecipeIngredient(models.Model):
                 quantity = round((quantity / 1000), 1) #truncate to 1 decimal place
 
         return "%s %s" % (quantity, measure)
-        
+
+
 class Recipe(models.Model):
     recipe_name = models.CharField(max_length=100, unique=True)
     recipe_desc = models.CharField(max_length=1000)
-    ingredients = models.ManyToManyField(RecipeIngredient)
+    ingredients = models.ManyToManyField(RecipeIngredient)#, validators=[ingredient_not_negative, ingredient_is_number])
 
     def __str__(self):
         return self.recipe_name
 
     def get_absolute_url(self):
-        return reverse('apicbase:recipe-detail', kwargs={"pk":self.id})
+        return reverse("apicbase:recipe-detail", kwargs={"pk":self.id})
 
 
     def assemble_for_display(self):
@@ -94,12 +94,16 @@ class Recipe(models.Model):
         return [data, total_cost]
 
     def add_ingredients(self, ingredient_string):
+        errors = []
         for each in ingredient_string.split(";"):
             #  each looks something like "123,987"
             #  split[0] is the ingredient id
             #  split[1] is the quantity
             try:
                 splits = each.split(",")
+                if int(splits[1]) < 1:
+                    raise ValidationError
+
                 self.add_ingredient(ing=splits[0], quantity=splits[1])
             except IndexError:
                 #  since these strings will always end with a trailing ';', 
@@ -127,4 +131,11 @@ class RecipeForm(ModelForm):
     #override
     def save(self):
         pass
+
+class SearchForm(forms.Form):
+    search_text = forms.CharField(
+        required=True,
+        #label='Search for recipes or ingredients',
+        widget = forms.TextInput(attrs={'placeholder': 'Search for recipes or ingredients'})
+    )
         
