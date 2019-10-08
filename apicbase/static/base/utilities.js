@@ -33,8 +33,9 @@ $(document).ready(function(){
         this.closest("tr").remove();
     });
 
+  
     
-    $(" form ").on("submit", function(event){
+    $(" #recipe-form ").on("submit", function(event){
         event.preventDefault();
         console.log("Submitted")
         var chosenIngredients = ""
