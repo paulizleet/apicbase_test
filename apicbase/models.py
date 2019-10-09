@@ -6,16 +6,16 @@ from django.core.exceptions import ValidationError
 # Create your models here.
 
 class Ingredient(models.Model):
-    ingredient_name = models.CharField(max_length=100, unique=True)
-    ingredient_desc = models.CharField(max_length=1000)
-    ingredient_cost = models.IntegerField(default=0)
-    ingredient_unit_size = models.IntegerField(default=1)
+    name = models.CharField(max_length=100, unique=True)
+    desc = models.CharField(max_length=1000)
+    cost = models.IntegerField(default=0)
+    unit_size = models.IntegerField(default=1)
     is_fluid = models.BooleanField(default=False) #used for converting to the higher denomination
                                                   # if fluid -> quantity / 100 -> liters
                                                   # else quantity / 1000 -> kilograms
 
     def __str__(self):
-        return self.ingredient_name
+        return self.name
 
     def get_absolute_url(self):
         return reverse('apicbase:ingredient-detail', kwargs={"pk":self.id})
@@ -38,8 +38,18 @@ class RecipeIngredient(models.Model):
     def get_cost(self):
         # divide this all by 100 to convert from cents to euros
         # truncate to 2 decimal places
-        return round(((self.quantity / self.ingredient.ingredient_unit_size) * self.ingredient.ingredient_cost)/100, 2)
+        return round(((self.quantity / self.ingredient.unit_size) * self.ingredient.cost)/100, 2)
+    
 
+
+    # Whenever we refer to this model, we only really care about the ingredient
+    # so we return values for that instead of whatever defaults we get for this model
+    def get_absolute_url(self):
+        return reverse("apicbase:ingredient-detail", kwargs={"pk": self.ingredient.pk})
+
+    # shortens calls from RecipeIngredient.ingredient.name -> RecipeIngredient.name
+    def name(self):
+        return self.ingredient.name
 
     def get_measure(self):
 
@@ -66,12 +76,12 @@ class RecipeIngredient(models.Model):
 
 
 class Recipe(models.Model):
-    recipe_name = models.CharField(max_length=100, unique=True)
-    recipe_desc = models.CharField(max_length=1000)
+    name = models.CharField(max_length=100, unique=True)
+    desc = models.CharField(max_length=1000)
     ingredients = models.ManyToManyField(RecipeIngredient)#, validators=[ingredient_not_negative, ingredient_is_number])
 
     def __str__(self):
-        return self.recipe_name
+        return self.name
 
     def get_absolute_url(self):
         return reverse("apicbase:recipe-detail", kwargs={"pk":self.id})
@@ -126,7 +136,7 @@ class RecipeForm(ModelForm):
     # ingredient_choices = IngredientChoiceField()
     class Meta:
         model = Recipe
-        fields = ["recipe_name", "recipe_desc"] #don't use default behavior for ingredients field.  it's special
+        fields = ["name", "desc"] #don't use default behavior for ingredients field.  it's special
 
     #override
     def save(self):

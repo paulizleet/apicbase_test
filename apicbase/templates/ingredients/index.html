@@ -6,7 +6,7 @@
     {% if ingredient_list %}
         <ul>
         {% for ingredient in ingredient_list %}
-            <li><a href="{% url 'apicbase:ingredient-detail' ingredient.id%}/">{{ ingredient.ingredient_name }}</a> - {{ingredient.ingredient_desc}}</li>
+            <li><a href="{{ ingredient.get_absolute_url }}">{{ ingredient.name }}</a> - {{ingredient.desc}}</li>
         {% endfor %}
         </ul>
     {% else %}

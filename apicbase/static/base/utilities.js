@@ -1,13 +1,26 @@
 $(document).ready(function(){
 
     var ingredientChooser = document.getElementById("id_ingredient_choices");
+    // when page is loaded, add NewIngredient option to the ingredient dropdown
+
+    // $(ingredientChooser).append("<option value=\"-1\">--New Ingredient--</option>")
+
+    $("#ingredient-dialogue").on('shown.bs.modal', function() {
+        $("#id_name").trigger("focus");
+    })
 
     $(" option ").on("click", function( event ){
         // add a new line containing the choice and give an option for quantity
-        console.log(event)
         var selection = event.target.value
         var selectionText = event.target.textContent
-        console.log(event)
+
+        // if the user chooses to add a new ingredient, 
+        // display the dialogue, add to db, and add to this list
+
+        if(selection == -1){
+            newIngredientDialogue();
+            return
+        }
 
 
         if(selectionText.trim() == ""){ return }
@@ -70,18 +83,25 @@ $(document).ready(function(){
         console.log(JSON.stringify(formSubmission))
         //ajax time
         $.ajax({
-            type: "POST",
+            method: "POST",
             url: window.location.pathname,
             data: $.param(formSubmission),
             success: function(data, status, xhr){
+                
 
-                console.log("prodding")
+                //fix this jank
                 $("html").empty();
                 $("html").append(data);
             },
             fail: function(){console.log("Fail")}
         })
     });
+
 })
 
+
+
+function newIngredientDialogue(response){
+    $("#ingredient-dialogue").toggle()
+}
 console.log("loaded");

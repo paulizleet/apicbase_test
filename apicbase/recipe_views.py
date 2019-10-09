@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
 from .models import Recipe, RecipeForm
+from django.core.paginator import Paginator
 
 ###############################################
 #using generic class views because....??????
@@ -12,8 +13,17 @@ from .models import Recipe, RecipeForm
 
 class RecipeIndex(ListView):
     template_name = 'recipes/index.html'
-    paginate_by = 20
+    def get(self, request):
+        recipe_list = Recipe.objects.all()
+        paginator = Paginator(recipe_list, 20)
+        page_num = request.GET["page"]
+        recipes = paginator.get_page(page_num)
+
+        return render(request, self.template_name, {'page': page_num})
+
+
     def get_queryset(self):
+
         return Recipe.objects.all()#[:20]
         
 class RecipeDetail(DetailView):
@@ -36,8 +46,8 @@ class RecipeCreate(CreateView):
     def post(self, request, *args, **kwargs):
         req_post = request.POST
         new_recipe = Recipe(
-            recipe_name = req_post['recipe_name'],
-            recipe_desc = req_post['recipe_desc']  
+            recipe_name = req_post['name'],
+            recipe_desc = req_post['desc']  
         )
 
         new_recipe.save()
@@ -72,7 +82,6 @@ class RecipeUpdate(UpdateView):
 
     def post(self, request, *args, **kwargs):
         # This is jank but I don't know what questions to ask to do it the right way
-        print("asdf")
         recipe = Recipe.objects.get(id=kwargs["pk"])
 
         for each in recipe.ingredients.all():
@@ -85,6 +94,4 @@ class RecipeUpdate(UpdateView):
         return redirect(recipe) 
 
 def direct_to_index(request):
-    print("gotcha")
-    print(request)
     return redirect("/recipe")

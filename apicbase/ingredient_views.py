@@ -18,7 +18,7 @@ class IngredientDetail(DetailView):
 
 class IngredientCreate(CreateView):
     model = Ingredient
-    fields = ['ingredient_name', 'ingredient_desc', 'ingredient_cost', 'ingredient_unit_size', 'is_fluid']
+    #fields = ['name', 'desc', 'cost', 'unit_size', 'is_fluid']
     template_name = "ingredients/ingredient_create_page.html"
     
 
@@ -36,7 +36,7 @@ class IngredientUpdate(UpdateView):
 
     model = Ingredient
     form_class = IngredientForm
-    template_name = "ingredients/ingredient_create_form.html"
+    template_name = "ingredients/ingredient_create_page.html"
 
     def form_valid(self, form):
         form.save()

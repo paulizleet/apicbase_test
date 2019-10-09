@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
@@ -22,8 +23,8 @@ class SearchView(ListView):
         ingredient_results = Ingredient.objects.none()
 
         for each in search_criteria.split(" "):
-            recipe_results = recipe_results.union(Recipe.objects.filter(recipe_name__contains=each))
-            ingredient_results = ingredient_results.union(Ingredient.objects.filter(ingredient_name__contains=each))
+            recipe_results = recipe_results.union(Recipe.objects.filter(name__contains=each))
+            ingredient_results = ingredient_results.union(Ingredient.objects.filter(name__contains=each))
             
         return {"recipe_results":recipe_results, "ingredient_results":ingredient_results}
 
@@ -31,3 +32,6 @@ class SearchView(ListView):
         results = self.get_queryset()
         print(results)
         return render(request, self.template_name, results)
+
+def get_new_ingredient_dialogue(request):
+    return render(request, "ingredients/ingredient_create_dialogue.html")
