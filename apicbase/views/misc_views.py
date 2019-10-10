@@ -9,12 +9,11 @@ from apicbase.models import Recipe, Ingredient
 
 class SearchView(ListView):
 
-    # Change this later!
     template_name = "base/search.html" #can use index here because its just a list :)
 
     def get_queryset(self):
         
-        #simple search that finds recipes containing any keyword in the query
+        #simple search that finds recipes and ingredients containing any keyword in the query
 
         search_criteria = self.request.GET["q"]
 
@@ -30,8 +29,4 @@ class SearchView(ListView):
 
     def get(self, request):
         results = self.get_queryset()
-        print(results)
         return render(request, self.template_name, results)
-
-def get_new_ingredient_dialogue(request):
-    return render(request, "ingredients/ingredient_create_dialogue.html")

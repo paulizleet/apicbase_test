@@ -5,14 +5,14 @@ from django.urls import reverse
 from apicbase.models import Recipe, RecipeForm
 from django.core.paginator import Paginator
 
-# Felt like having a bunch of methods named recipe_index, recipe_get_create, recipe_post_create etc
-# was cumbersome.  generic views have methods to override (or not) to get the functionality I desire
 
 class RecipeIndex(ListView):
     template_name = 'recipes/index.html'
     def get(self, request):
+        #Grabs all ingredients and paginates them before serving
+
         recipe_list = Recipe.objects.all()
-        paginator = Paginator(recipe_list, 20)
+        paginator = Paginator(recipe_list, 10)
         page_num = 0
         page_num = request.GET.get("page")
         recipes = paginator.get_page(page_num)
@@ -31,6 +31,8 @@ class RecipeDetail(DetailView):
 
     def get(self, request, pk):
         recipe = Recipe.objects.get(id=pk)
+        # Since recipe ingredients are a weird case I decided to collate all the data into a single variable for easy rendering
+
         display_data = recipe.assemble_for_display()
         return render(request, self.template_name, {'recipe': recipe, 'data': display_data[0], 'cost': display_data[1]})
 
@@ -68,11 +70,18 @@ class RecipeUpdate(UpdateView):
         return redirect("/recipe/%s" % self.kwargs["pk"])
 
     def post(self, request, *args, **kwargs):
-        # This is jank but I don't know what questions to ask to do it the right way
+        # Get recipe
+        # Rename
         recipe = Recipe.objects.get(id=kwargs["pk"])
 
         for each in recipe.ingredients.all():
             each.delete()
+        
+        if recipe.name != request.POST["name"] or recipe.desc != request.POST["desc"]:
+            recipe.name=request.POST["name"]
+            recipe.desc = request.POST["desc"]
+            recipe.save()
+
         ingredient_string = request.POST["ingredients"]
         recipe.add_ingredients(ingredient_string)
 

@@ -54,7 +54,7 @@ class Ingredient(models.Model):
 
 class IngredientForm(ModelForm):
 
-    # give our form fields Bootstrap styling
+    # Override form labels and give our form fields Bootstrap styling
     name = forms.CharField(
         label="Ingredient Name",
         max_length=100,
@@ -111,7 +111,6 @@ class IngredientForm(ModelForm):
 
 
 class RecipeIngredient(models.Model):
-    #recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0) #will store in smallest denomination(ie grams/centiliter) and convert later
 
@@ -126,7 +125,7 @@ class RecipeIngredient(models.Model):
     def get_absolute_url(self):
         return reverse("apicbase:ingredient-detail", kwargs={"pk": self.ingredient.pk})
 
-    # Shortens calls from RecipeIngredient.ingredient.name -> RecipeIngredient.name
+    # Shortens calls from RecipeIngredient.ingredient.name to RecipeIngredient.name
     def name(self):
         return self.ingredient.name
 
@@ -157,7 +156,7 @@ class RecipeIngredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(max_length=100, unique=True)
     desc = models.CharField(max_length=1000)
-    ingredients = models.ManyToManyField(RecipeIngredient)#, validators=[ingredient_not_negative, ingredient_is_number])
+    ingredients = models.ManyToManyField(RecipeIngredient)
 
     def __str__(self):
         return self.name
@@ -183,6 +182,7 @@ class Recipe(models.Model):
         return [data, total_cost]
 
     def add_ingredients(self, ingredient_string):
+        # Takes the ingredient form data and makes adds all ingredients
         errors = []
         for each in ingredient_string.split(";"):
             #  each looks something like "123,987"
@@ -210,7 +210,7 @@ class Recipe(models.Model):
 class RecipeForm(ModelForm):
 
 
-    # give our form fields Bootstrap styling
+    # Override form labels and give our form fields Bootstrap styling
     name = forms.CharField(
         label="Recipe Name",
         max_length=100,
@@ -241,7 +241,6 @@ class RecipeForm(ModelForm):
         required=False
     )
 
-    # ingredient_choices = IngredientChoiceField()
     class Meta:
         model = Recipe
         fields = ["name", "desc"] #don't use default behavior for ingredients field.  it's special

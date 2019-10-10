@@ -29,9 +29,9 @@
     </head>
     <body>
 
-        <header class="navbar navbar-light bg-light navbar-expand-sm">
+        <nav class="navbar navbar-light bg-light navbar-expand-sm">
             <a class="navbar-brand" href="#">AB</a>
-            <ul class="navbar-nav">
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'apicbase:recipe-index'%}">Recipes </a>
                 </li>
@@ -44,7 +44,7 @@
                 <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search recipes and ingredients">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
-        </header>
+        </nav>
         <div class="container">
         <br>
         {% block content%}

@@ -5,14 +5,14 @@ from apicbase.models import Ingredient, IngredientForm, RecipeIngredient, Recipe
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 
-# Create your views here.
 
 class IngredientIndex(ListView):
     template_name = 'ingredients/index.html'
 
     def get(self, request):
+        #Grabs all ingredients and paginates them before serving
         ingredient_list = Ingredient.objects.all()
-        paginator = Paginator(ingredient_list, 20)
+        paginator = Paginator(ingredient_list, 10)
         page_num = 0
         page_num = request.GET.get("page")
         ingredients = paginator.get_page(page_num)
@@ -29,6 +29,7 @@ class IngredientDetail(DetailView):
     template_name = "ingredients/detail.html"
 
     def get(self, request, pk):
+        # Grabs the requested ingredient and all recipes containing that ingredient
         ingredient = Ingredient.objects.get(id=pk)
         recipes = Recipe.objects.filter(ingredients__ingredient=ingredient)
 
@@ -37,13 +38,9 @@ class IngredientDetail(DetailView):
 
 class IngredientCreate(CreateView):
     model = Ingredient
-    fields = ['name', 'desc', 'cost', 'unit_size', 'is_fluid']
+    form_class = IngredientForm
     template_name = "ingredients/ingredient_create_page.html"
     
-
-    def get(self, request):
-        print("asdf")
-        return render(request, "ingredients/ingredient_create_page.html", {"form": IngredientForm()})
 
 class IngredientUpdate(UpdateView):
 
@@ -54,8 +51,3 @@ class IngredientUpdate(UpdateView):
     def form_valid(self, form):
         form.save()
         return redirect("/ingredient/%s" % self.kwargs["pk"])
-
-class IngredientSearch(ListView):
-    pass
-        
-#def add_recipe(request, )

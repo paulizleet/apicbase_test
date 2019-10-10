@@ -1,11 +1,10 @@
 {% extends 'base/base.html'%}
 
 {% block content %}
-        <h1> <strong>Ingredients</strong> </h1>
-        <br>
-        <a href="add">Add New Ingredient</a>
-        
-        <br><br>
+    <div class="row align-items-center justify-content-between">
+        <h2>Ingredients</h2>      <a href="{% url 'apicbase:ingredient-new' %}">Add New Ingredient</a>
+    </div>
+    <br>
 
     {% if ingredients %}
         <ul class="list-group">
