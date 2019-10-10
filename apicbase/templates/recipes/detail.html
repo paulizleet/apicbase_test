@@ -2,24 +2,24 @@
 
 {% block content %}
 
-<h1>Recipe: {{recipe.name}}</h1>
+<div class="row align-items-center justify-content-between">
+<h2>Recipe: {{recipe.name}}</h2>      <a href="{% url 'apicbase:recipe-update' recipe.id%}">Update Recipe</a>
+</div>
+<br>
 <p>Description: {{recipe.desc}}</p>
 <p>Cost: €{{cost}} </p>
-    <table id="ingredients-list" border="1">
-        <thead>
-        <tr><th>Ingredient</th><th>Quantity</th><th>Cost</th></tr>
-        </thead>
+<table id="ingredients-list" class="table">
+<thead>
+<tr><th>Ingredient</th><th>Quantity</th><th>Cost</th></tr>
+</thead>
        
 {% for ingredient, cost in data.items  %}
 <tr>
     <td> <a href="{{ ingredient.get_absolute_url }}" >{{ingredient.name}}</td>
-
-    {% comment %} apparently you can call methods without parentheses {% endcomment %}
     <td> {{ingredient.get_measure}} </td>
     <td> €{{ ingredient.get_cost }} </td> 
 </tr>
 {% endfor %}
 </table>
 
-<a href="{% url 'apicbase:recipe-update' recipe.id%}">Update</a>
 {% endblock %}

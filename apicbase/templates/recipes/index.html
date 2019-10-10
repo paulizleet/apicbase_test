@@ -1,15 +1,39 @@
 {% extends 'base/base.html'%}
 
+
+
 {% block content %}
-{% if recipe_list %}
-    <ul>
-    {% for recipe in recipe_list %}
-        <li><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a> - {{recipe.desc}}</li>
+
+<div class="row align-items-center justify-content-between">
+<h2>Recipes</h2>      <a href="{% url 'apicbase:recipe-new' %}">Add New Recipe</a>
+</div>
+<br>
+{% if recipes %}
+    <ul class="list-group">
+    {% for recipe in recipes %}
+        <li class="list-group-item"><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a> - {{recipe.desc}}</li>
     {% endfor %}
     </ul>
 {% else %}
     <p>No recipes.</p>
 {% endif %}
-<a href="add">Add New Recipe</a>
+<br>
+<nav>
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" href="{% if recipes.has_previous %}?page={{recipes.previous_page_number}}{% else %}{{"#"}}{% endif %}">&laquo;</a>
+        </li>
+        {% for i in page_nums %}
+        <li class="page-item" >
+             <a class="page-link {% if recipes.page_number == i %} current-page{% endif %} " href="?page={{i}}">{{i}} </a>
+        </li>
+        {% endfor %}
+        <li class="page-item">
+            <a class="page-link" href="{% if recipes.has_next %}?page={{recipes.next_page_number}}{% else %}{{"#"}}{% endif %} ">&raquo;</a>
+        </li>
+    </ul>
+    
+</nav> 
+
 {% endblock %}
 

@@ -1,19 +1,21 @@
 from django.urls import path
 #from django.urls import reverse
 
-from .recipe_views import RecipeIndex, RecipeCreate, RecipeDetail, RecipeUpdate
-from .ingredient_views import IngredientIndex, IngredientCreate, IngredientDetail, IngredientUpdate
-from . import recipe_views
-from . import ingredient_views
-from .misc_views import SearchView, get_new_ingredient_dialogue
+from .views.recipe_views import RecipeIndex, RecipeCreate, RecipeDetail, RecipeUpdate
+from .views.ingredient_views import IngredientIndex, IngredientCreate, IngredientDetail, IngredientUpdate
+from .views import recipe_views
+from .views import ingredient_views
+from .views.misc_views import SearchView, get_new_ingredient_dialogue
 
 app_name = "apicbase"
 
 urlpatterns = [
+
+
+
     path('', recipe_views.direct_to_index, name='recipe-index'),
     path('search/', SearchView.as_view(), name="search-results"),
     path('new-ingredient-dialogue/', get_new_ingredient_dialogue, name="new-ingredient-dialogue"),
-
 
     path('recipe/', RecipeIndex.as_view(), name='recipe-index'),
     path('recipe/add', RecipeCreate.as_view(), name="recipe-new"),

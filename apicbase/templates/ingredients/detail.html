@@ -2,11 +2,29 @@
 
 {% block content %}
 
-<h1>Ingredient: {{ingredient.name}}</h1>
+<div class="row align-items-center justify-content-between">
+<h2>Ingredient: {{ingredient.name}}</h2>      <a href="{% url 'apicbase:ingredient-update' ingredient.id%}">Update Ingredient</a>
+</div>
+<br>
 <p>Description: {{ingredient.desc}}</p>
-<p>Cost: {{ingredient.cost}}</p>
-<p>Unit Size: {{ ingredient.unit_size}}</p>
-</table>
+<p>Cost: €{{ingredient.cost}}</p>
+<p>Unit Size: {{ ingredient.get_unit_size}}</p>
 
-<a href="update">Update</a>
+<br><br>
+<ul class="list-group">
+    {% if recipes %}
+        
+        <h3> Recipes containing {{ingredient.name}}</h3>
+        {% for recipe in recipes %}
+            <li class="list-group-item"><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a> - {{recipe.desc}}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <div class="list-group-item">
+            There are no recipes that use this ingredient. <a href="{% url 'apicbase:recipe-new' %}">Add one!</a>
+        </div>
+    {% endif %}
+
+</ul>
+
 {% endblock %}

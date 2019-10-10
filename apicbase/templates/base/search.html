@@ -5,25 +5,22 @@
 <div class="recipe-results">
     {% if recipe_results %}
         <h2> Matching recipes</h2>
-        <ul>
+        <ul class="list-group">
         {% for recipe in recipe_results %}
-            <li><a href="{% url 'apicbase:recipe-detail' recipe.id%}/">{{ recipe.recipe_name }}</a> - {{recipe.recipe_desc}}</li>
-        {% comment %} <li>
-            {% url 'apicbase:recipe-detail' recipe.id%}
-        </li> {% endcomment %}
+            <li class="list-group-item"><a href="{{recipe.get_absolute_url}}">{{ recipe.name }}</a> - {{recipe.desc}}</li>
         {% endfor %}
         </ul>
     {% else %}
         <p>No matching recipes.</p>
     {% endif %}
 </div>
-
+<br>
 <div class="ingredient-results">
     {% if ingredient_results %}
         <h2> Matching Ingredients</h2>
-        <ul>
+        <ul class="list-group">
         {% for ingredient in ingredient_results %}
-            <li><a href="{% url 'apicbase:ingredient-detail' ingredient.id%}/">{{ ingredient.ingredient_name }}</a> - {{ingredient.ingredient_desc}}</li>
+            <li class="list-group-item"><a href="{{ingredient.get_absolute_url}}/">{{ ingredient.name }}</a> - {{ingredient.desc}}</li>
         {% endfor %}
         </ul>
     {% else %}

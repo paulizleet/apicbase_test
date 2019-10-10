@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
 
-from .models import Recipe, Ingredient
+from apicbase.models import Recipe, Ingredient
 
 
 class SearchView(ListView):

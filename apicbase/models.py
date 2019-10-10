@@ -3,14 +3,20 @@ from django.forms import ModelForm, Textarea
 from django import forms
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+
+from decimal import Decimal
 # Create your models here.
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=100, unique=True)
     desc = models.CharField(max_length=1000)
-    cost = models.IntegerField(default=0)
-    unit_size = models.IntegerField(default=1)
-    is_fluid = models.BooleanField(default=False) #used for converting to the higher denomination
+    cost = models.DecimalField(       
+        max_digits=10,
+        decimal_places=2
+        )
+    unit_size = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    is_fluid = models.BooleanField(default=False) # Used for converting to the higher denomination
                                                   # if fluid -> quantity / 100 -> liters
                                                   # else quantity / 1000 -> kilograms
 
@@ -20,34 +26,107 @@ class Ingredient(models.Model):
     def get_absolute_url(self):
         return reverse('apicbase:ingredient-detail', kwargs={"pk":self.id})
 
+    def get_unit_size(self):
 
-class IngredientChoiceField(forms.Form):
-    field1 = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
+        # Logic to return liters/grams for liquids/solids
+        # and convert into higher denominations if need be
+
+        # I assume that people arent using thousands 
+        # of kilograms of stuff in a single recipe
+        measure = ""
+        quantity = self.unit_size
+        if self.is_fluid:
+            measure = "L"
+            if quantity < 100:
+                measure = "cL"
+            else:
+                quantity = round((quantity / 100), 1) #truncate to 1 decimal place
+        else:
+            measure = "g"
+            if quantity >= 1000:
+                measure = "kg"
+                quantity = round((quantity / 1000), 1) #truncate to 1 decimal place
+
+        return "%s %s" % (quantity, measure)
+
+
+
 
 class IngredientForm(ModelForm):
+
+    # give our form fields Bootstrap styling
+    name = forms.CharField(
+        label="Ingredient Name",
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                'class':'form-control'
+            }
+        )
+    )
+
+    desc = forms.CharField(
+        max_length=1000,
+        label="Description",
+        widget=forms.TextInput(
+            attrs={
+                'class':'form-control'
+            }
+        )
+    )
+    
+    cost = forms.DecimalField(
+        label = "Cost per unit (€)",
+        min_value=0,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={
+                'class':'form-control'
+            }
+        )
+    )
+
+
+    unit_size = forms.IntegerField(
+        label="Unit size (cL/g)",
+
+        widget=forms.NumberInput(
+            attrs={
+                'class':'form-control'
+            }
+        )
+    )
+
+    is_fluid = forms.BooleanField(
+        label = "Is liquid?",
+        required=False
+    )
+
+
+
     class Meta:
         model = Ingredient
         fields = "__all__"
+
+
 
 class RecipeIngredient(models.Model):
     #recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0) #will store in smallest denomination(ie grams/centiliter) and convert later
 
-    #don't store cost in table because it's subject to change
+    #Don't store cost in table because it's subject to change
     def get_cost(self):
-        # divide this all by 100 to convert from cents to euros
-        # truncate to 2 decimal places
-        return round(((self.quantity / self.ingredient.unit_size) * self.ingredient.cost)/100, 2)
-    
-
+        # Divide this all by 100 to convert from cents to euros
+        # Truncate to 2 decimal places
+        return round(((Decimal( self.quantity / self.ingredient.unit_size ))  * self.ingredient.cost), 2)
 
     # Whenever we refer to this model, we only really care about the ingredient
     # so we return values for that instead of whatever defaults we get for this model
     def get_absolute_url(self):
         return reverse("apicbase:ingredient-detail", kwargs={"pk": self.ingredient.pk})
 
-    # shortens calls from RecipeIngredient.ingredient.name -> RecipeIngredient.name
+    # Shortens calls from RecipeIngredient.ingredient.name -> RecipeIngredient.name
     def name(self):
         return self.ingredient.name
 
@@ -130,17 +209,42 @@ class Recipe(models.Model):
 
 class RecipeForm(ModelForm):
 
-    
-    ingredient_choices = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
+
+    # give our form fields Bootstrap styling
+    name = forms.CharField(
+        label="Recipe Name",
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={
+                'class':'form-control'
+            }
+        )
+    )
+
+    desc = forms.CharField(
+        max_length=1000,
+        label="Description",
+        widget=forms.TextInput(
+            attrs={
+                'class':'form-control'
+            }
+      
+        )
+    )
+    ingredient_choices = forms.ModelMultipleChoiceField(
+        queryset=Ingredient.objects.all(),
+        widget=forms.SelectMultiple(
+            attrs={
+                'class':'custom-select'
+            }
+        ),
+        required=False
+    )
 
     # ingredient_choices = IngredientChoiceField()
     class Meta:
         model = Recipe
         fields = ["name", "desc"] #don't use default behavior for ingredients field.  it's special
-
-    #override
-    def save(self):
-        pass
 
 class SearchForm(forms.Form):
     search_text = forms.CharField(

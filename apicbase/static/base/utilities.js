@@ -49,6 +49,7 @@ $(document).ready(function(){
   
     
     $(" #recipe-form ").on("submit", function(event){
+        errors = []
         event.preventDefault();
         console.log("Submitted")
         var chosenIngredients = ""
@@ -59,14 +60,32 @@ $(document).ready(function(){
         //Then manually serialize the ingredients table
 
         //throw some validations in here for good measure
+        if ($(".ingredient-number").length == 0){
+            alert("Please add some ingredients")
+            return
+        }
         $(".ingredient-number").each(function(ele){
             console.log(this.textContent)
             var ingredientNumber = this.textContent
-        
+            
             //'this' is the current td w/ class .ingredient-number
             //we want the input(child) of "this's" sibling belonging to class .ingredient-quantity
             var ingredientQuantity =  $(this).siblings(".ingredient-quantity").children("input")[0].value
 
+            if(parseInt(ingredientQuantity) == NaN){
+                alert("Letters aren't allowed in the quantity box")
+                return
+            }
+            
+            if(parseInt(ingredientQuantity) != Number(ingredientQuantity)){
+                alert("Integers only please")
+                return
+            }
+
+            if(parseInt(ingredientQuantity) <= 0){
+                alert("Only positive quantities allowed")
+                return
+            }
 
             //parameter-ize ingredients list because $.param() is failing me
             chosenIngredients += ingredientNumber+","+ingredientQuantity+";"
@@ -92,6 +111,8 @@ $(document).ready(function(){
                 //fix this jank
                 $("html").empty();
                 $("html").append(data);
+
+
             },
             fail: function(){console.log("Fail")}
         })

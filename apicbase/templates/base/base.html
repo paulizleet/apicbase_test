@@ -1,7 +1,7 @@
 {% load static %}
 <html>
     <head>
-        <title>Epic Based Recipe Management</title>
+        <title>AB Recipe Management</title>
 
 
         {% comment %} bootstrap {% endcomment %}
@@ -23,39 +23,32 @@
 
         {% comment %} utilities.js {% endcomment %}
         <script
-            src="{% static 'base/utilities.js' iven a jQuery object that represents a set of DOM elements, the .find() method allows us to search through the %}">
+            src="{% static 'base/utilities.js' %}">
         </script>
 
     </head>
     <body>
+
+        <header class="navbar navbar-light bg-light navbar-expand-sm">
+            <a class="navbar-brand" href="#">AB</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'apicbase:recipe-index'%}">Recipes </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'apicbase:ingredient-index'%}">Ingredients</a>
+                </li>
+
+            </ul>
+            <form id="search-form" action="{% url 'apicbase:search-results'%}" class="form-inline my-2 my-lg-0 " method="get">
+                <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search recipes and ingredients">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </header>
         <div class="container">
-            <div class="jumbotron">
-                <h1 class="display-4"> Epic Based Recipe Management </h1>
-            </div>
-            <nav class=" navbar-light bg-light navbar-expand-sm">
-                <div id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'apicbase:recipe-index'%}">Recipes </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'apicbase:ingredient-index'%}">Ingredients</a>
-                        </li>
-                        <li class="nav-item">
-                            <form id="search-form" action="{% url 'apicbase:search-results'%}" class="form-inline" method="get">
-                                {% comment %} {% csrf_token %} {% endcomment %}
-                                <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search recipes and ingredients">
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-        
-            {% block content%}
-            {% endblock %}
-    </div>
-
+        <br>
+        {% block content%}
+        {% endblock %}
+        </div>
     </body>
 </html>

@@ -2,24 +2,30 @@
 
 {% block content %}
 
-<form id="recipe-form" method="update">
+<form id="recipe-form" class="form-group" method="update">
     {% csrf_token %}
-    {{ form.as_p }}
-   
-        <table id="ingredients-list" border="1">
-        <thead>
-        <tr><th>Ingredient</th><th>Quantity (cL/g)</th><th>Del.</th></tr>
-        </thead>
-        {% if recipe.ingredients %}
-            {% for each in recipe.ingredients.all %}
-                <tr class="ingredient-row\">
-                <td class="ingredient-number {{each.ingredient.id}}" hidden>{{each.ingredient.id}}</td>
-                <td>{{each.ingredient.name}}</td>
-                <td class="ingredient-quantity"><input value="{{each.quantity}}"></input></td>
-                <td><button type="button" class="delbutton" >❌</button></td></tr>
-            {% endfor %}
-        {% endif %}
-        </table>
+
+    {% for field in form.visible_fields%}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}            
+        </div>
+    {% endfor %}
+
+    <table id="ingredients-list" class="table">
+    <thead>
+    <tr><th>Ingredient</th><th>Quantity (cL/g)</th><th>Del.</th></tr>
+    </thead>
+    {% if recipe.ingredients %}
+        {% for each in recipe.ingredients.all %}
+            <tr class="ingredient-row\">
+            <td class="ingredient-number {{each.ingredient.id}}" hidden>{{each.ingredient.id}}</td>
+            <td>{{each.ingredient.name}}</td>
+            <td class="ingredient-quantity"><input value="{{each.quantity}}"></input></td>
+            <td><button type="button" class="delbutton" >❌</button></td></tr>
+        {% endfor %}
+    {% endif %}
+    </table>
     {% comment %} {{form.ingredient_choice_field}} {% endcomment %}
     <input id="formsubmit" type="submit" value="Save">
 </form>

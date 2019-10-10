@@ -1,18 +1,38 @@
 {% extends 'base/base.html'%}
 
 {% block content %}
+        <h1> <strong>Ingredients</strong> </h1>
+        <br>
+        <a href="add">Add New Ingredient</a>
+        
+        <br><br>
 
-
-    {% if ingredient_list %}
-        <ul>
-        {% for ingredient in ingredient_list %}
-            <li><a href="{{ ingredient.get_absolute_url }}">{{ ingredient.name }}</a> - {{ingredient.desc}}</li>
+    {% if ingredients %}
+        <ul class="list-group">
+        {% for ingredient in ingredients %}
+            <li class="list-group-item"><a href="{{ ingredient.get_absolute_url }}">{{ ingredient.name }}</a> - {{ingredient.desc}}</li>
         {% endfor %}
         </ul>
     {% else %}
         <p>No ingredients.</p>
     {% endif %}
 
-<a href="add">Add New Ingredient</a>
+<br>
+<nav>
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" href="{% if ingredients.has_previous %}?page={{ingredients.previous_page_number}}{% else %}{{"#"}}{% endif %}">&laquo;</a>
+        </li>
+        {% for i in page_nums %}
+        <li class="page-item" >
+             <a class="page-link {% if ingredients.page_number == i %} current-page{% endif %} " href="?page={{i}}">{{i}} </a>
+        </li>
+        {% endfor %}
+        <li class="page-item">
+            <a class="page-link" href="{% if ingredients.has_next %}?page={{ingredients.next_page_number}}{% else %}{{"#"}}{% endif %} ">&raquo;</a>
+        </li>
+    </ul>
+</nav>
+
 
 {% endblock %}
